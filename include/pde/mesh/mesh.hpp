@@ -38,13 +38,13 @@ namespace pde {
 				}
 
 				// cartesian to flat indexing
-				inline std::size_t idx(int i, int j, int k=0) const; 
+				std::size_t idx(int i, int j, int k=0) const; 
 
 				// check bounds
-				inline bool in_bounds(int i, int j, int k=0) const;
+				bool in_bounds(int i, int j, int k=0) const;
 				
 				// indexing to coordinate
-				inline std::array<double,DIM> coord(int i, int j, int k=0) const;
+				std::array<double,DIM> coord(int i, int j, int k=0) const;
 
 				// domain size 
 				std::size_t size() const;

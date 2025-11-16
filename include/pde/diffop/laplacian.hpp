@@ -1,6 +1,6 @@
 #pragma once
 
-#include "diffop.hpp"
+#include "pde/diffop/diffop.hpp"
 
 namespace pde{
 	namespace diffop{
@@ -8,13 +8,15 @@ namespace pde{
 		template<int stencil_rad, int DIM>
 		class Laplacian : public DiffOp<Laplacian<stencil_rad, DIM>>{
 			public:
-				Laplacian(const mesh::Mesh<DIM>& mesh_): DiffOp<Laplacian<stencil_rad, DIM>>(mesh_) {};
+				Laplacian(const mesh::Mesh<DIM>& mesh_): mesh(mesh_) {};
 				
-				int stencilRadius() const{
+				void apply_inst(const double* u, double* Au) const;
+				
+				int stencilRadius_inst() const{
 					return stencil_rad;
 				}
 			private:
-				mesh::Mesh<DIM>& mesh;
+				mesh::Mesh<DIM> mesh;
 		};
 
 	}
