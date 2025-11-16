@@ -1,14 +1,13 @@
 #pragma once
+
 #include <array>
 #include <cstddef>
 #include <stdexcept>
 
-
 namespace pde {
 	namespace mesh{
 		
-		const int DIM = 2;
-		
+		template<int DIM>
 		class Mesh {
 			public:
 				
@@ -39,27 +38,16 @@ namespace pde {
 				}
 
 				// cartesian to flat indexing
-				inline std::size_t idx(int i, int j) const {
-					return (std::size_t(i*N[1]) + std::size_t(j));
-				}
+				inline std::size_t idx(int i, int j, int k=0) const; 
 
 				// check bounds
-				inline bool in_bounds(int i, int j) const {
-					return ((i >= 0 && i < N[0]) && (j >= 0 && j < N[1]));
-				}
+				inline bool in_bounds(int i, int j, int k=0) const;
 				
 				// indexing to coordinate
-				inline std::array<double,DIM> coord(int i, int j) const {
-					std::array<double,DIM> out {};
-					out[0] = xmin[0] + (i + 1)*h[0];
-					out[1] = xmin[1] + (j + 1)*h[1];
-					return out;
-				}
+				inline std::array<double,DIM> coord(int i, int j, int k=0) const;
 
 				// domain size 
-				std::size_t size() const {
-					return std::size_t(N[0] * N[1]);
-				}
+				std::size_t size() const;
 		};
 	}
 }
