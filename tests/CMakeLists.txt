@@ -1,0 +1,25 @@
+add_executable(test_stencil test_stencil.cpp)
+target_link_libraries(test_stencil PRIVATE core)
+add_test(NAME stencil COMMAND test_stencil)
+
+add_executable(test_serial test_serial.cpp)
+target_link_libraries(test_serial PRIVATE solvers serial_backend)
+add_test(NAME serial COMMAND test_serial)
+
+if (ENABLE_OMP)
+	add_executable(test_openmp test_openmp.cpp)
+	target_link_libraries(test_openmp PRIVATE solvers openmp_backend)
+	add_test(NAME openmp COMMAND test_openmp)
+endif()
+
+if (ENABLE_MPI)
+	add_executable(test_mpi test_mpi.cpp)
+	target_link_libraries(test_mpi PRIVATE solvers mpi_backend)
+	add_test(NAME mpi COMMAND mpirun -np 4 test_mpi)
+endif()
+
+if (ENABLE_CUDA)
+	add_executable(test_cuda test_cuda.cpp)
+	target_link_libraries(test_cuda PRIVATE solvers cuda_backend)
+	add_test(NAME cuda COMMAND test_cuda)
+endif()
