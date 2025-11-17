@@ -38,6 +38,27 @@ bool pde::mesh::Mesh<3>::in_bounds(int i, int j, int k) const {
 }
 
 template <>
+pde::mesh::BoundaryFace pde::mesh::Mesh<2>::get_boundary_face(int i, int j, int) const{
+	if (i == 0) return BoundaryFace::XMin;
+	if (i == N[0] - 1) return BoundaryFace::XMax;
+	if (j == 0) return BoundaryFace::YMin;
+	if (j == N[1] - 1) return BoundaryFace::YMax;
+	return BoundaryFace::None;
+}
+
+template <>
+pde::mesh::BoundaryFace pde::mesh::Mesh<3>::get_boundary_face(int i, int j, int k) const{
+	if (i == 0) return BoundaryFace::XMin;
+	if (i == N[0] - 1) return BoundaryFace::XMax;
+	if (j == 0) return BoundaryFace::YMin;
+	if (j == N[1] - 1) return BoundaryFace::YMax;
+	if (k == 0) return BoundaryFace::ZMin;
+	if (k == N[2] - 1) return BoundaryFace::ZMax;
+	return BoundaryFace::None;
+}
+
+
+template <>
 std::array<double,2> pde::mesh::Mesh<2>::idx2coord(int i, int j, int) const {
 	std::array<double,2> out {};
 	out[0] = xmin[0] + (i + 1)*h[0];

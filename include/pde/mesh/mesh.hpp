@@ -7,6 +7,16 @@
 namespace pde {
 	namespace mesh{
 		
+		enum class BoundaryFace {
+			None = -1,
+			XMin = 0,
+			XMax = 1,
+			YMin = 2,
+			YMax = 3,
+			ZMin = 4,
+			ZMax = 5,
+		};
+
 		template<int DIM>
 		class Mesh {
 			public:
@@ -36,14 +46,15 @@ namespace pde {
 						h[d] = (xmax[d] - xmin[d]) / (N[d] + 1);
 					}
 				}
-
-				std::size_t idx2flat(int i, int j, int k=0) const; 
 				
+				// indexing functions
+				std::size_t idx2flat(int i, int j, int k=0) const; 
 				std::array<int,DIM> flat2idx(std::size_t flat_idx) const;
-
 				std::array<double,DIM> idx2coord(int i, int j, int k=0) const;
 				
+				// domain and boundary detection
 				bool in_bounds(int i, int j, int k=0) const;
+				BoundaryFace get_boundary_face(int i, int j, int k=0) const;
 
 				// domain size 
 				std::size_t size() const;
