@@ -36,10 +36,10 @@ void check2DCase(int N){
 	};
 	
 	// construct pde objects
-	pde::diffop::Laplacian<1,2> lap(mesh);
+	pde::diffop::Laplacian<2,1> lap(mesh);
     pde::rhs::RHS<2> f_rhs(mesh, rhs_f, &f[0]);
     pde::solution::Solution<2> u_sol(mesh, &u[0]);
-	pde::boundary::Dirichlet<2> dbc(mesh, u_sol, f_rhs);
+	pde::boundary::Dirichlet<2, pde::diffop::Laplacian<2,1>> dbc(mesh, u_sol, f_rhs, lap);
 	
 	// set bcs
 	dbc.set(pde::mesh::BoundaryFace::XMin, const_dbc_f);
@@ -68,7 +68,7 @@ void check2DCase(int N){
 
     for (int i=1; i<mesh.N[0]-1; i++){
 		for (int j=1; j<mesh.N[1]-1; j++){
-			lap.apply(&u[mesh.idx2flat(i,j)], &Lu[mesh.idx2flat(i,j)]);
+			lap.applyOperator(&u[mesh.idx2flat(i,j)], &Lu[mesh.idx2flat(i,j)]);
 		}
     }
 

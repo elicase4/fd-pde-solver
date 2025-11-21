@@ -5,16 +5,17 @@
 #include <stdexcept>
 
 #include "pde/mesh/mesh.hpp"
+#include "pde/diffop/diffop.hpp"
 #include "pde/solution/solution.hpp"
 #include "pde/rhs/rhs.hpp"
 
 namespace pde {
 	namespace boundary {
 		
-		template<int DIM>
+		template<int DIM, typename Derived>
 		class Dirichlet {
 			public:
-				Dirichlet(const pde::mesh::Mesh<DIM>& mesh_, const pde::solution::Solution<DIM>& sol_, const pde::rhs::RHS<DIM>& rhs_) : mesh(mesh_), solution(sol_), rhs(rhs_) {};
+				Dirichlet(const pde::mesh::Mesh<DIM>& mesh_, const pde::solution::Solution<DIM>& sol_, const pde::rhs::RHS<DIM>& rhs_, const pde::diffop::DiffOp<Derived>& diffop_) : mesh(mesh_), solution(sol_), rhs(rhs_), diffop(diffop_) {};
 
 				void set(pde::mesh::BoundaryFace face, std::function<double(const std::array<double, DIM>&)> f){
 					bc_funcs[(int) face] = f;
@@ -43,13 +44,14 @@ namespace pde {
 					rhs_idx[axis] += offset;
 					std::size_t rhs_flat = mesh.idx2flat(rhs_idx[0], rhs_idx[1], rhs_idx[2]);
 					
-					f[rhs_flat] -= (bc_funcs[(int) face](sol_coord)) / (mesh.h[axis] * mesh.h[axis]);
+					f[rhs_flat] -= diffop.computeDirichletCoeff(axis) * bc_funcs[(int) face](sol_coord);
 				}
 
 			private:
 				const pde::mesh::Mesh<DIM>& mesh;
 				const pde::solution::Solution<DIM>& solution;
 				const pde::rhs::RHS<DIM>& rhs;
+				const pde::diffop::DiffOp<Derived>& diffop;
 				std::array<std::function<double(const std::array<double,DIM>&)>, 2*DIM> bc_funcs{};
 		};
 	}
